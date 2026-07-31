@@ -78,6 +78,15 @@ BUTTON
   background: #b91c1c;
 }
 
+
+.btn-transparent {
+  background: none;
+  color: #111827;
+}
+
+.btn-transparent:hover:not(:disabled) {
+  background: #d1d5db0f;
+}
 /* Sizes */
 .btn-sm {
   padding: 0.5rem 1rem;

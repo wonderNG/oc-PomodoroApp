@@ -1,7 +1,7 @@
 {
   "name": "oc-pomodoro",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "electron/main.js",
   "scripts": {
@@ -15,7 +15,8 @@
   "dependencies": {
     "lucide-react": "^1.25.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -33,18 +34,18 @@
     "wait-on": "^9.1.0"
   },
   "build": {
-  "appId": "com.yourname.ocpomodoro",
-  "productName": "OC Pomodoro",
-  "files": [
-    "dist/**/*",
-    "electron/**/*"
-  ],
-  "directories": {
-    "output": "release"
-  },
-  "win": {
-    "target": "portable",
-    "icon": "public/wonder.ico"
+    "appId": "com.yourname.ocpomodoro",
+    "productName": "OC Pomodoro",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "public/wonder.ico"
+    }
   }
-}  
 }

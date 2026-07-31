@@ -12,12 +12,15 @@ import {
   Pause,
   User,
   X,
+  TimerReset,
+  RotateCcw,
 } from "lucide-react";
 import "./App.css";
 import Button from "./Button";
 import { SelectInput } from "./SelectInput";
 import { Timer } from "./Timer";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   //array that contains time values
@@ -42,6 +45,14 @@ function App() {
 
   //track whether the timer is currently running Focus or Break
   const [currentSession, setCurrentSession] = useState("focus");
+  //set an active session so the reset button makes sense
+  const [activeSession, setActiveSession] = useState(false);
+  const [resetKey, setResetKey] = useState(0); //to rerender Timer to initial state
+  const handleReset = () => {
+    setIsRunning(false);
+    setActiveSession(false);
+    setResetKey((prev) => prev + 1);
+  };
 
   //Timer things
   const [isRunning, setIsRunning] = useState(false);
@@ -50,27 +61,83 @@ function App() {
 
     // Wait for the user to click Start
     setIsRunning(false);
+    //ends the session
+    setActiveSession(false);
   };
+
+  //keyboard listener
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === "Space" || event.key === " ") {
+        event.preventDefault();
+        setIsRunning((prev) => !prev);
+        setActiveSession(true);
+      }
+
+      if (event.key.toLowerCase() === "r") {
+        event.preventDefault();
+        handleReset();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
       <div className="main-container">
-        <div className="floating-menu stats-info">
-          <Button
-            text=""
-            iconLeft={<BarChart2 fill="white" />}
-            variant="outline"
-          />
+        {activeSession ? (
+          <div className="floating-menu stats-info">
+            <span style={{ color: "grey" }}>
+              oc-Pomodoro App
+              <p style={{ color: "white", fontWeight: "bold" }}>
+                {currentSession.toUpperCase()}
+              </p>
+            </span>
+          </div>
+        ) : (
+          <div className="floating-menu stats-info">
+            <Link to="/stats">
+              <Button
+                text=""
+                iconLeft={<BarChart2 fill="white" />}
+                variant="outline"
+              />
+            </Link>
 
-          <Button text="" iconLeft={<InfoIcon />} variant="outline" />
-        </div>
+            <Link to="/info">
+              <Button text="" iconLeft={<InfoIcon />} variant="outline" />
+            </Link>
+          </div>
+        )}
 
         <Timer
-          key={currentSession}
+          key={`*${currentSession}-${resetKey}`}
           initialMinutes={currentSession === "focus" ? focusTime : breakTime}
           isRunning={isRunning}
           setIsRunning={setIsRunning}
           onComplete={handleSessionComplete}
+          Button={
+            <Button
+              variant="transparent"
+              text=""
+              iconLeft={
+                isRunning ? (
+                  <Pause className="timer-icon" />
+                ) : (
+                  <Play className="timer-icon" />
+                )
+              }
+              onClick={() => {
+                setActiveSession(true);
+                setIsRunning((prev) => !prev);
+              }}
+            />
+          }
         />
 
         {activeMode !== null && (
@@ -92,25 +159,45 @@ function App() {
           </div>
         )}
 
-        <div className="floating-menu main-menu">
-          <SelectInput
-            name="Break"
-            defDuration={breakTime}
-            onClick={() => setActiveMode("break")}
-          />
-          <Button
-            text={isRunning ? "Pause" : "Start"}
-            iconLeft={
-              isRunning ? <Pause fill="white" /> : <Play fill="white" />
-            }
-            onClick={() => setIsRunning((prev) => !prev)}
-          />
-          <SelectInput
-            name="Focus"
-            defDuration={focusTime}
-            onClick={() => setActiveMode("focus")}
-          />
-        </div>
+        {!activeSession ? (
+          <div className="floating-menu main-menu">
+            <SelectInput
+              name="Break"
+              defDuration={breakTime}
+              onClick={() => setActiveMode("break")}
+            />
+            <Button
+              text={isRunning ? "Pause" : "Start"}
+              iconLeft={
+                isRunning ? <Pause fill="white" /> : <Play fill="white" />
+              }
+              onClick={() => {
+                setIsRunning((prev) => !prev);
+                setActiveSession(true);
+              }}
+            />
+            <SelectInput
+              name="Focus"
+              defDuration={focusTime}
+              onClick={() => setActiveMode("focus")}
+            />
+          </div>
+        ) : (
+          <div className="floating-menu main-menu">
+            <Button
+              text="Reset"
+              iconLeft={<RotateCcw />}
+              onClick={handleReset}
+            />
+            <Button
+              text={isRunning ? "Pause" : "Start"}
+              iconLeft={
+                isRunning ? <Pause fill="white" /> : <Play fill="white" />
+              }
+              onClick={() => setIsRunning((prev) => !prev)}
+            />
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Play, Pause } from "lucide-react";
 import completeSound from "./assets/complete.mp3";
+import Button from "./Button";
 
 export function Timer({
   initialMinutes,
   isRunning,
   setIsRunning,
   onComplete,
+  Button
 }) {
   const [secondsLeft, setSecondsLeft] = useState(initialMinutes * 60);
 
@@ -62,17 +64,9 @@ export function Timer({
   return (
     <div className="timer-container">
       <div className="timer">{formatTime(secondsLeft)}</div>
-
-      <span
-        style={{ cursor: "pointer" }}
-        onClick={() => setIsRunning((prev) => !prev)}
-      >
-        {isRunning ? (
-          <Pause className="timer-icon" />
-        ) : (
-          <Play className="timer-icon" />
-        )}
-      </span>
+      {
+        Button || ("")
+      }
     </div>
   );
 }
