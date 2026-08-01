@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyApPICDzpwLilMdZGqoRbvI-LQSYENXCeA",
-  authDomain: "oc-pomodoro-app.firebaseapp.com",
-  projectId: "oc-pomodoro-app",
-  storageBucket: "oc-pomodoro-app.firebasestorage.app",
-  messagingSenderId: "538389767459",
-  appId: "1:538389767459:web:b91235fb3ca777c1865896"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 
