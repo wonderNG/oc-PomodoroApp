@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "oc-pomodoro",
   "private": true,
   "version": "0.0.2",
@@ -13,6 +14,7 @@
     "electron:build": "npm run build && electron-builder"
   },
   "dependencies": {
+    "firebase": "^12.17.0",
     "lucide-react": "^1.25.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -38,7 +40,12 @@
     "productName": "OC Pomodoro",
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "dist-electron/**/*",
+      "package.json",
+      "!node_modules/**/*",
+      "!src/**/*",
+      "!.git/**/*"
     ],
     "directories": {
       "output": "release"

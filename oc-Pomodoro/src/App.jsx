@@ -1,21 +1,15 @@
 import {
-  BarChart,
   BarChart2,
-  BarChart4,
-  ClosedCaptionIcon,
   Cross,
   CrossIcon,
-  Info,
   InfoIcon,
   Play,
-  Pointer,
   Pause,
-  User,
   X,
-  TimerReset,
   RotateCcw,
 } from "lucide-react";
 import "./App.css";
+import { trackAppOpen, trackSessionCompleted } from "./lib/usageTracking";
 import Button from "./Button";
 import { SelectInput } from "./SelectInput";
 import { Timer } from "./Timer";
@@ -23,12 +17,12 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 function App() {
-  //array that contains time values
-  const timeOptions = Array.from({ length: 12 }, (_, index) => (index + 1) * 5);
+  //array that contains time values for time options
+  const timeOptions = Array.from({ length: 12 }, (_, index) => (index + 1) * 1); //default to *5 when done doing the stats part test
 
   //state variable that takes that time value
-  const [breakTime, setBreakTime] = useState(5);
-  const [focusTime, setFocusTime] = useState(25);
+  const [breakTime, setBreakTime] = useState(1); //default to 05 when done doing the stats part test
+  const [focusTime, setFocusTime] = useState(2); //default to 25 when done doing the stats part test
 
   //set time depending on what's been clicked
   const [activeMode, setActiveMode] = useState(null);
@@ -54,14 +48,19 @@ function App() {
     setResetKey((prev) => prev + 1);
   };
 
-  //Timer things
+  useEffect(() => {
+    trackAppOpen();
+  }, []);
+
+  // Timer things
   const [isRunning, setIsRunning] = useState(false);
   const handleSessionComplete = () => {
+    trackSessionCompleted(
+      currentSession,
+      currentSession === "focus" ? focusTime : breakTime,
+    );
     setCurrentSession((prev) => (prev === "focus" ? "break" : "focus"));
-
-    // Wait for the user to click Start
     setIsRunning(false);
-    //ends the session
     setActiveSession(false);
   };
 
@@ -94,9 +93,8 @@ function App() {
           <div className="floating-menu stats-info">
             <span style={{ color: "grey" }}>
               oc-Pomodoro App
-              <p style={{ color: "white", fontWeight: "bold" }}>
-                {currentSession.toUpperCase()}
-              </p>
+              <br />
+              <strong>{currentSession.toUpperCase()}</strong>
             </span>
           </div>
         ) : (
@@ -121,7 +119,7 @@ function App() {
           isRunning={isRunning}
           setIsRunning={setIsRunning}
           onComplete={handleSessionComplete}
-          Button={
+          actionButton={
             <Button
               variant="transparent"
               text=""
@@ -185,15 +183,15 @@ function App() {
         ) : (
           <div className="floating-menu main-menu">
             <Button
+              variant="outline"
               text="Reset"
               iconLeft={<RotateCcw />}
               onClick={handleReset}
             />
             <Button
+              variant="outline"
               text={isRunning ? "Pause" : "Start"}
-              iconLeft={
-                isRunning ? <Pause fill="white" /> : <Play fill="white" />
-              }
+              iconLeft={isRunning ? <Pause /> : <Play />}
               onClick={() => setIsRunning((prev) => !prev)}
             />
           </div>
