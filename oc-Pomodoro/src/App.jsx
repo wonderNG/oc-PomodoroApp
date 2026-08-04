@@ -16,13 +16,14 @@ import { Timer } from "./Timer";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { recordSessionStart, recordSessionComplete } from "./services/storage";
 function App() {
   //array that contains time values for time options
   const timeOptions = Array.from({ length: 12 }, (_, index) => (index + 1) * 1); //default to *5 when done doing the stats part test
 
   //state variable that takes that time value
-  const [breakTime, setBreakTime] = useState(1); //default to 05 when done doing the stats part test
-  const [focusTime, setFocusTime] = useState(2); //default to 25 when done doing the stats part test
+  const [breakTime, setBreakTime] = useState(5); //default to 05 when done doing the stats part test
+  const [focusTime, setFocusTime] = useState(25); //default to 25 when done doing the stats part test
 
   //set time depending on what's been clicked
   const [activeMode, setActiveMode] = useState(null);
@@ -54,11 +55,20 @@ function App() {
 
   // Timer things
   const [isRunning, setIsRunning] = useState(false);
+  const handleSessionStart = () => {
+    if (!activeSession) {
+      // Record 'Started' metric when initiating a fresh focus session
+      recordSessionStart();
+    }
+    setIsRunning((prev) => !prev);
+    setActiveSession(true);
+  };
   const handleSessionComplete = () => {
     trackSessionCompleted(
       currentSession,
       currentSession === "focus" ? focusTime : breakTime,
     );
+    recordSessionComplete(focusTime);
     setCurrentSession((prev) => (prev === "focus" ? "break" : "focus"));
     setIsRunning(false);
     setActiveSession(false);
@@ -130,10 +140,7 @@ function App() {
                   <Play className="timer-icon" />
                 )
               }
-              onClick={() => {
-                setActiveSession(true);
-                setIsRunning((prev) => !prev);
-              }}
+              onClick={handleSessionStart}
             />
           }
         />

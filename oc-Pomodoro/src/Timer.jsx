@@ -7,7 +7,7 @@ export function Timer({
   isRunning,
   setIsRunning,
   onComplete,
-  actionButton
+  actionButton,
 }) {
   const [secondsLeft, setSecondsLeft] = useState(initialMinutes * 60);
 
@@ -51,19 +51,24 @@ export function Timer({
     setIsRunning(false);
 
     audioRef.current.currentTime = 0;
-    audioRef.current.play().catch((err) => console.log("Audio play blocked:", err));
+    audioRef.current
+      .play()
+      .catch((err) => console.log("Audio play blocked:", err));
 
-    //desktop notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      const notification = new Notification("Time's Up!", {
-        body: "Time to switch buddy!!!",
-        silent: true
+    // Send trigger through Electron IPC
+    if (window.electronAPI) {
+      window.electronAPI.showTimerNotification({
+        title: "Time's Up!",
+        body: "Time to switch buddy! Click to start next session.",
       });
-
-      //Electron window to focus if the user clicks the banner
-      notification.onclick = () => {
-        window.focus();
-      };
+    } else if (
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ) {
+      const notification = new Notification("Time's Up!", {
+        body: "Time to switch buddy!",
+      });
+      notification.onclick = () => window.focus();
     }
 
     onComplete?.();
@@ -75,16 +80,14 @@ export function Timer({
 
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
       2,
-      "0"
+      "0",
     )}`;
   };
 
   return (
     <div className="timer-container">
       <div className="timer">{formatTime(secondsLeft)}</div>
-      {
-        actionButton || ("")
-      }
+      {actionButton || ""}
     </div>
   );
 }
