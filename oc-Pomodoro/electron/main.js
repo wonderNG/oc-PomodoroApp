@@ -7,6 +7,7 @@ Menu.setApplicationMenu(null);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = !app.isPackaged;
 
+
 // Set App User Model ID so Windows Toast Notifications display correctly during dev
 if (process.platform === "win32") {
   app.setAppUserModelId(app.getName() || "Pomodoro App");
@@ -34,7 +35,7 @@ function createWindow() {
     win.loadFile(path.join(__dirname, "../dist/index.html"));
   }
 }
-
+app.setName('ocPomodoro-Tango');
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
