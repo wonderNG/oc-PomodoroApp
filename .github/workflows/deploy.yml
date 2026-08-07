@@ -4,6 +4,11 @@ on:
   push:
     branches: ["main"]
 
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
@@ -20,10 +25,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: oc-Pomodoro/package-lock.json
 
-      - name: Install & Build Vite App from Subfolder
+      - name: Install & Build Vite App
+        working-directory: oc-Pomodoro
         run: |
-          cd oc-Pomodoro
           npm ci
           npm run build
 
@@ -33,4 +40,5 @@ jobs:
           path: oc-Pomodoro/dist
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
