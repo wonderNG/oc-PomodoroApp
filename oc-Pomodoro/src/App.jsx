@@ -104,7 +104,7 @@ function App() {
         {activeSession ? (
           <div className="floating-menu stats-info">
             <span style={{ color: "grey" }}>
-              oc-Pomodoro App
+              oc-Pomodoro App Test version
               <br />
               <strong>{currentSession.toUpperCase()}</strong>
             </span>
