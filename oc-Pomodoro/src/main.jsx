@@ -13,19 +13,26 @@ import App from "./App";
 import Info from "./Info";
 import Stats from "./Stats";
 
-const Router =
-  window.location.protocol === "file:"
-    ? HashRouter
-    : BrowserRouter;
+const isElectron = window.location.protocol === "file:";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Router>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/info" element={<Info />} />
-        <Route path="/stats" element={<Stats />} />
-      </Routes>
-    </Router>
+    {isElectron ? (
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/info" element={<Info />} />
+          <Route path="/stats" element={<Stats />} />
+        </Routes>
+      </HashRouter>
+    ) : (
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/info" element={<Info />} />
+          <Route path="/stats" element={<Stats />} />
+        </Routes>
+      </BrowserRouter>
+    )}
   </StrictMode>
 );
