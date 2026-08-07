@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import "./App.css";
 import { trackAppOpen, trackSessionCompleted } from "./lib/usageTracking";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import Button from "./Button";
 import { SelectInput } from "./SelectInput";
 import { Timer } from "./Timer";
@@ -99,6 +100,7 @@ function App() {
   return (
     <>
       <div className="main-container">
+      <SpeedInsights />
         {activeSession ? (
           <div className="floating-menu stats-info">
             <span style={{ color: "grey" }}>
