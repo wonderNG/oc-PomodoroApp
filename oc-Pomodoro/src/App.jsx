@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 import { recordSessionStart, recordSessionComplete } from "./services/storage";
 function App() {
   //array that contains time values for time options
-  const timeOptions = Array.from({ length: 12 }, (_, index) => (index + 1) * 1); //default to *5 when done doing the stats part test
+  const timeOptions = Array.from({ length: 12 }, (_, index) => (index + 1) * 5); //default to *5 when done doing the stats part test
 
   //state variable that takes that time value
   const [breakTime, setBreakTime] = useState(5); //default to 05 when done doing the stats part test
